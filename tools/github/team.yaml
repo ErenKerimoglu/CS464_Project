@@ -1,7 +1,7 @@
-# owner key -> GitHub username. Fill in the missing usernames once invitations are accepted.
+# owner key -> GitHub username (from the repo's collaborator invitations).
 # An empty value means "not assigned yet"; `create_issues.py assign` skips it.
 eren: ErenKerimoglu
-ege: ""
-yunus: ""
-berkay: ""
-eftelya: ""
+ege: egeural
+yunus: YunusCelik21
+berkay: BerkayAtmn
+eftelya: Eftelyaa
