@@ -1,0 +1,5 @@
+# Provisional; finalized in #12 and tuned in #15.
+defaults: [base.yaml]
+model: {name: convnext_tiny, pretrained: true, drop_path: 0.1}
+preprocess: {out_size: 224}
+train: {max_epochs: 30, lr: 1.0e-4}

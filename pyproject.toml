@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "galaxy"
+version = "0.1.0"
+description = "Does orientation matter? Galaxy morphology classification on Galaxy10 DECaLS (CS464 Group 10)"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "pyarrow>=14",
+    "pyyaml>=6.0",
+    "scipy>=1.10",
+    "scikit-learn>=1.3",
+    "matplotlib>=3.7",
+    "h5py>=3.9",
+    "tqdm>=4.66",
+]
+
+[project.optional-dependencies]
+deep = [
+    "torch>=2.1",
+    "torchvision>=0.16",
+    "timm>=0.9.12",
+    "grad-cam>=1.5",          # pytorch-grad-cam
+]
+classical = [
+    "scikit-image>=0.22",
+    "xgboost>=2.0",
+    "astropy>=5.3",
+    "photutils>=1.10",
+    "statmorph>=0.5",
+    "joblib>=1.3",
+]
+tuning = ["optuna>=3.5"]
+equivariant = ["escnn>=1.0.11"]   # pin the exact working version in #8
+dev = ["pytest>=7.4", "ruff>=0.4", "nbstripout>=0.6"]
+all = ["galaxy[deep,classical,tuning,equivariant]"]
+
+[tool.setuptools.packages.find]
+include = ["galaxy*"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+extend-exclude = ["notebooks"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["E741"]
+
+[tool.ruff.lint.per-file-ignores]
+"tools/**" = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+markers = ["gpu: needs a CUDA device (skipped in CI)", "slow: long-running"]

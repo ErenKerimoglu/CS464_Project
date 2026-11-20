@@ -1,0 +1,5 @@
+# Provisional; finalized in #6 and tuned in #15.
+defaults: [base.yaml]
+model: {name: small_cnn, pretrained: false}
+preprocess: {out_size: 128}
+train: {max_epochs: 60, lr: 1.0e-3}

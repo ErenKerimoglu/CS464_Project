@@ -1,0 +1,5 @@
+# Provisional; finalized in #12 and tuned in #15. Reference backbone for E1a/E3/E4/E5.
+defaults: [base.yaml]
+model: {name: resnet50, pretrained: true}
+preprocess: {out_size: 224}
+train: {max_epochs: 30, lr: 1.0e-4}

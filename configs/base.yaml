@@ -1,0 +1,43 @@
+# Default protocol for every deep run (PROJECT_PLAN §3). Model configs inherit with `defaults: [base.yaml]`.
+experiment: debug
+run_name: debug
+
+data:
+  split_version: v1
+  fraction: 1.0          # train-set fraction (E3); nested stratified subsets
+  batch_size: 64
+  num_workers: 4
+
+preprocess:
+  policy: rotflip        # none | rotflip | d4
+  crop: 180
+  out_size: 224          # overridden by model configs (e.g. 128 for small_cnn)
+
+model:
+  name: resnet50
+  pretrained: true
+  drop_path: 0.0
+  freeze_backbone: false # linear probe (E2)
+
+train:
+  max_epochs: 30
+  lr: 1.0e-4
+  head_lr: null          # null → same as lr
+  weight_decay: 0.05
+  warmup_epochs: 1
+  grad_clip: 1.0
+  amp: true
+  early_stopping_patience: 8
+  monitor: val_macro_f1
+
+loss:
+  name: ce               # ce | weighted_ce | focal  (E4)
+  label_smoothing: 0.1
+  focal_gamma: 2.0
+  class_weight_beta: 1.0
+
+sampler:
+  name: shuffle          # shuffle | oversample  (E4)
+
+eval:
+  splits: [val, test]

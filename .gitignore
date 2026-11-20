@@ -1,0 +1,53 @@
+# ---- data & artifacts (never commit) ----
+data/*
+!data/README.md
+!data/splits/
+data/splits/*
+!data/splits/*.csv
+!data/splits/*.json
+!data/splits/.gitkeep
+checkpoints/
+wandb/
+lightning_logs/
+*.pt
+*.pth
+*.ckpt
+*.h5
+*.hdf5
+*.npy
+*.parquet
+
+# ---- results: commit metrics JSON / small preds / tables / figures, not big blobs ----
+results/**/*.pt
+results/**/big_*
+
+# ---- python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.env
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# ---- OS / IDE ----
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# ---- LaTeX ----
+report/**/*.aux
+report/**/*.log
+report/**/*.out
+report/**/*.synctex.gz
+report/**/*.bbl
+report/**/*.blg
+report/**/*.fls
+report/**/*.fdb_latexmk

@@ -1,0 +1,5 @@
+# Provisional; finalized in #8 and tuned in #13.
+defaults: [base.yaml]
+model: {name: escnn_d4, pretrained: false}
+preprocess: {out_size: 129}
+train: {max_epochs: 60, lr: 1.0e-3}
