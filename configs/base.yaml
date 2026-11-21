@@ -6,7 +6,11 @@ data:
   split_version: v1
   fraction: 1.0          # train-set fraction (E3); nested stratified subsets
   batch_size: 64
+  eval_batch_multiplier: 2   # val/test batches are 2× larger (no gradients)
   num_workers: 4
+  in_memory: false           # true on Kaggle (30 GB RAM): loads the split's images into RAM once; workers share
+                             # it via fork on Linux. (Windows spawns workers and would copy it: keep false there.)
+  pin_memory: true
 
 preprocess:
   policy: rotflip        # none | rotflip | d4
