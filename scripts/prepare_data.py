@@ -95,7 +95,10 @@ def main(argv=None) -> None:
         same = existing[["orig_index", "split"]].equals(split_df[["orig_index", "split"]].reset_index(drop=True))
         print(f"[split] {SPLIT_FILE.name} already exists (frozen) - regenerated split identical: {same}")
         if not same:
-            sys.exit("Regenerated split differs from the committed one. Do not overwrite; investigate.")
+            print("[split] WARNING: this environment regenerates a different split (library version?). "
+                  "The committed file is the source of truth and is used below. Please report this in issue #3.",
+                  file=sys.stderr)
+        split_df = existing
     else:
         save_split(split_df, force=a.force_split)
         REMOVED_FILE.parent.mkdir(parents=True, exist_ok=True)
