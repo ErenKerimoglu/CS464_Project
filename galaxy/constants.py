@@ -19,9 +19,14 @@ TABLES_DIR = RESULTS_DIR / "tables"
 CONFIGS_DIR = REPO_ROOT / "configs"
 
 # ----------------------------------------------------------------------------- dataset
-DATASET_URL = "https://zenodo.org/records/10845026/files/Galaxy10_DECals.h5"
+# Zenodo record 10845026 (astroNN Galaxy10 DECaLS); size and MD5 from the Zenodo API.
+DATASET_URL = "https://zenodo.org/api/records/10845026/files/Galaxy10_DECals.h5/content"
 DATASET_FILENAME = "Galaxy10_DECals.h5"
-DATASET_MD5: str | None = None  # TODO(#2): fill in after the first verified download
+DATASET_SIZE = 2_735_267_419
+DATASET_MD5 = "c6b7b4db82b3a5d63d6a7e3e5249b51c"
+# astroNN's own de-duplicated variant: used only as a cross-check of our dedup (#3), never for training.
+NODUP_FILENAME = "Galaxy10_DECals_NoDuplicated.h5"
+NODUP_URL = "https://zenodo.org/api/records/10845026/files/Galaxy10_DECals_NoDuplicated.h5/content"
 
 IMAGE_SIZE = 256          # raw image side (pixels)
 PIXEL_SCALE_ARCSEC = 0.262
@@ -56,5 +61,9 @@ ROTATION_ANGLES = tuple(range(0, 360, 15))
 
 SPLIT_FILE = SPLITS_DIR / f"split_{SPLIT_VERSION}.csv"
 BAND_STATS_FILE = SPLITS_DIR / f"band_stats_{SPLIT_VERSION}.json"
+REMOVED_FILE = SPLITS_DIR / f"removed_{SPLIT_VERSION}.csv"
+DEDUP_REPORT_FILE = SPLITS_DIR / f"dedup_report_{SPLIT_VERSION}.json"
+PROCESSED_IMAGES = PROCESSED_DIR / "images_256.npy"
+PROCESSED_META = PROCESSED_DIR / "meta.csv"
 
 assert len(CLASS_COUNTS) == NUM_CLASSES and sum(CLASS_COUNTS) == 17736

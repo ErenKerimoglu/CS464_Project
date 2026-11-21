@@ -1,6 +1,14 @@
 # data/
 
-Only `data/splits/` is committed: `split_v1.csv`, `band_stats_v1.json` and `removed.csv` (#3). **Never regenerate them.**
+Only `data/splits/` is committed (#3). **Never regenerate these files.** `prepare_data.py` refuses to overwrite them
+and checks that a re-run reproduces them exactly.
+
+| File | Content |
+|------|---------|
+| `split_v1.csv` | `orig_index,label,ra,dec,redshift,split,frac_rank` for every kept galaxy |
+| `band_stats_v1.json` | train-only per-band mean/std (180 crop, [0,1] scale) |
+| `removed_v1.csv` | images removed by deduplication: `orig_index,group_id,reason,label,kept_index` |
+| `dedup_report_v1.json` | counts, radius sensitivity, split sizes, max class-share deviation |
 
 Everything else is created locally or downloaded from the team's private Kaggle Dataset / Drive (#10):
 
