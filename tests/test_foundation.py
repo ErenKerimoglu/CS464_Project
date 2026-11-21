@@ -50,3 +50,10 @@ def test_git_commit_returns_string():
 def test_synthetic_fixtures(synthetic_images, synthetic_meta):
     assert synthetic_images.shape == (60, 256, 256, 3) and synthetic_images.dtype == np.uint8
     assert synthetic_meta["label"].value_counts().nunique() == 1  # balanced
+
+
+def test_processed_dir_resolution(tmp_path, monkeypatch):
+    monkeypatch.setenv("GALAXY_PROCESSED_DIR", str(tmp_path / "x"))
+    assert C._find_processed_dir() == tmp_path / "x"          # explicit override wins
+    monkeypatch.delenv("GALAXY_PROCESSED_DIR")
+    assert C._find_processed_dir().name == "processed"        # falls back to DATA_DIR/processed

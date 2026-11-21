@@ -8,7 +8,32 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = Path(os.environ.get("GALAXY_DATA_DIR", REPO_ROOT / "data"))
 RAW_DIR = DATA_DIR / "raw"
-PROCESSED_DIR = DATA_DIR / "processed"
+KAGGLE_DATASET_SLUG = "galaxy10-decals-processed-v1"
+
+
+def _find_processed_dir() -> Path:
+    """Where ``images_256.npy`` lives (read-only is fine). Order:
+
+    1. ``$GALAXY_PROCESSED_DIR``
+    2. ``$GALAXY_DATA_DIR/processed`` (or ``data/processed``) if the cache is there
+    3. on Kaggle: an attached dataset ``/kaggle/input/**/processed/images_256.npy`` (the team dataset, #10)
+    4. ``DATA_DIR/processed`` (where ``scripts/prepare_data.py`` writes it)
+    """
+    if os.environ.get("GALAXY_PROCESSED_DIR"):
+        return Path(os.environ["GALAXY_PROCESSED_DIR"])
+    local = DATA_DIR / "processed"
+    if (local / "images_256.npy").exists():
+        return local
+    kaggle_input = Path("/kaggle/input")
+    if kaggle_input.is_dir():
+        hits = sorted(kaggle_input.glob("*/processed/images_256.npy")) + \
+            sorted(kaggle_input.glob("*/*/*/processed/images_256.npy"))
+        if hits:
+            return hits[0].parent
+    return local
+
+
+PROCESSED_DIR = _find_processed_dir()
 FEATURES_DIR = DATA_DIR / "features"
 SPLITS_DIR = REPO_ROOT / "data" / "splits"          # always inside the repo (committed)
 CKPT_DIR = Path(os.environ.get("GALAXY_CKPT_DIR", REPO_ROOT / "checkpoints"))

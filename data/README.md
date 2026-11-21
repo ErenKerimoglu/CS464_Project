@@ -18,4 +18,7 @@ Everything else is created locally or downloaded from the team's private Kaggle 
 | `processed/images_256.npy`, `processed/meta.csv` | `scripts/prepare_data.py` (#3) | about 3.5 GB (uint8 memmap) |
 | `features/*_v1.parquet` | `scripts/extract_features.py` (#7, #11) | small |
 
-Set `GALAXY_DATA_DIR` to use a different location (e.g. `/kaggle/input/...` or a Drive folder).
+Set `GALAXY_DATA_DIR` to use a different location (e.g. a Drive folder).
+
+**On Kaggle, attach the team dataset `galaxy10-decals-processed-v1`.** The processed images are found automatically
+and nothing needs to be downloaded. See [docs/KAGGLE_DATASET.md](../docs/KAGGLE_DATASET.md).
