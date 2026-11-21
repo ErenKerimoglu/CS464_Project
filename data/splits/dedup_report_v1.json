@@ -1,0 +1,47 @@
+{
+  "radius_arcsec": 1.0,
+  "n_original": 17736,
+  "n_kept": 17618,
+  "n_groups": 59,
+  "n_removed": 118,
+  "sensitivity": [
+    {
+      "radius_arcsec": 0.5,
+      "groups": 59,
+      "images_in_groups": 118,
+      "removed_duplicate": 0,
+      "removed_conflict": 118,
+      "conflict_groups": 59
+    },
+    {
+      "radius_arcsec": 1.0,
+      "groups": 59,
+      "images_in_groups": 118,
+      "removed_duplicate": 0,
+      "removed_conflict": 118,
+      "conflict_groups": 59
+    },
+    {
+      "radius_arcsec": 2.0,
+      "groups": 59,
+      "images_in_groups": 118,
+      "removed_duplicate": 0,
+      "removed_conflict": 118,
+      "conflict_groups": 59
+    },
+    {
+      "radius_arcsec": 5.0,
+      "groups": 76,
+      "images_in_groups": 153,
+      "removed_duplicate": 17,
+      "removed_conflict": 120,
+      "conflict_groups": 60
+    }
+  ],
+  "split_counts": {
+    "train": 12332,
+    "val": 2643,
+    "test": 2643
+  },
+  "max_class_share_deviation_pp": 0.01
+}

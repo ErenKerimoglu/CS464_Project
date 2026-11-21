@@ -1,0 +1,66 @@
+{
+  "n_original": 17736,
+  "n_kept": 17618,
+  "removed": {
+    "label_conflict": 118
+  },
+  "split_counts": {
+    "train": 12332,
+    "val": 2643,
+    "test": 2643
+  },
+  "max_class_share_deviation_pp": 0.01,
+  "band_stats": {
+    "mean": [
+      0.194361,
+      0.190221,
+      0.184639
+    ],
+    "std": [
+      0.156175,
+      0.146351,
+      0.137326
+    ]
+  },
+  "crop180_flux_fraction": {
+    "median": 0.7181,
+    "p5": 0.5597,
+    "p1": 0.4768,
+    "n_below_0.9": 17542,
+    "n_below_0.8": 14364
+  },
+  "dedup_sensitivity": [
+    {
+      "radius_arcsec": 0.5,
+      "groups": 59,
+      "images_in_groups": 118,
+      "removed_duplicate": 0,
+      "removed_conflict": 118,
+      "conflict_groups": 59
+    },
+    {
+      "radius_arcsec": 1.0,
+      "groups": 59,
+      "images_in_groups": 118,
+      "removed_duplicate": 0,
+      "removed_conflict": 118,
+      "conflict_groups": 59
+    },
+    {
+      "radius_arcsec": 2.0,
+      "groups": 59,
+      "images_in_groups": 118,
+      "removed_duplicate": 0,
+      "removed_conflict": 118,
+      "conflict_groups": 59
+    },
+    {
+      "radius_arcsec": 5.0,
+      "groups": 76,
+      "images_in_groups": 153,
+      "removed_duplicate": 17,
+      "removed_conflict": 120,
+      "conflict_groups": 60
+    }
+  ]
+}
