@@ -1,0 +1,4 @@
+defaults: [base.yaml]
+model: {name: escnn_c8, pretrained: false, group: c8}
+preprocess: {out_size: 129}
+train: {max_epochs: 60, lr: 1.0e-3}
