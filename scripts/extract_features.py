@@ -31,8 +31,16 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _cache_name(feature: str, rotate_deg: float, corruption: str, severity: int) -> str:
+def _cache_name(
+    feature: str,
+    rotate_deg: float,
+    corruption: str,
+    severity: int,
+    split: str = "all",
+) -> str:
     name = feature
+    if split != "all":
+        name += f"_{split}"
     if rotate_deg != 0:
         name += f"_rot{int(round(rotate_deg)) % 360:03d}"
     if corruption != "none":
@@ -46,8 +54,11 @@ def _prepare_image(image: np.ndarray) -> np.ndarray:
 
 def _report_morphology(frame: pd.DataFrame, elapsed: float) -> None:
     split_df = pd.read_csv(SPLIT_FILE)[["orig_index", "label"]]
-    results = split_df.merge(frame[["orig_index", "morph_failed", "gini", "m20",
-                                    "concentration", "asymmetry"]], on="orig_index", how="inner")
+    results = split_df.merge(
+        frame[["orig_index", "morph_failed", "gini", "m20", "concentration", "asymmetry"]],
+        on="orig_index",
+        how="inner",
+    )
     results["morph_failed"] = results["morph_failed"].fillna(1.0)
     print(f"morph: {len(frame)} images in {elapsed:.2f}s")
     print("Morphology failure rate by class:")
@@ -67,11 +78,25 @@ def _report_morphology(frame: pd.DataFrame, elapsed: float) -> None:
         class_rows = valid[valid["label"] == label]
         if class_rows.empty:
             continue
-        axes[0].scatter(class_rows["gini"], class_rows["m20"], s=8, alpha=0.45,
-                        color=colors(label), label=short_name, rasterized=True)
+        axes[0].scatter(
+            class_rows["gini"],
+            class_rows["m20"],
+            s=8,
+            alpha=0.45,
+            color=colors(label),
+            label=short_name,
+            rasterized=True,
+        )
         class_rows = class_rows[class_rows["concentration"].notna() & class_rows["asymmetry"].notna()]
-        axes[1].scatter(class_rows["concentration"], class_rows["asymmetry"], s=8, alpha=0.45,
-                        color=colors(label), label=short_name, rasterized=True)
+        axes[1].scatter(
+            class_rows["concentration"],
+            class_rows["asymmetry"],
+            s=8,
+            alpha=0.45,
+            color=colors(label),
+            label=short_name,
+            rasterized=True,
+        )
 
     axes[0].set(xlabel="Gini", ylabel="M20", title="Gini–M20 by class")
     axes[1].set(xlabel="Concentration", ylabel="Asymmetry", title="Concentration vs asymmetry")
@@ -99,7 +124,7 @@ def main() -> None:
 
     for feature in args.features:
         fn = {"hog": hog_features, "color": color_features, "morph": morph_features}[feature]
-        cache_name = _cache_name(feature, args.rotate, args.corruption, args.severity)
+        cache_name = _cache_name(feature, args.rotate, args.corruption, args.severity, args.split)
 
         def transform(image: np.ndarray, feature_name: str = feature) -> np.ndarray:
             if feature_name == "morph":
@@ -122,8 +147,10 @@ def main() -> None:
         if feature == "morph":
             _report_morphology(frame, elapsed)
         else:
-            print(f"{cache_name}: {len(frame)} rows in {elapsed:.2f}s "
-                  f"-> data/features/{cache_name}_v1.parquet")
+            print(
+                f"{cache_name}: {len(frame)} rows in {elapsed:.2f}s "
+                f"-> data/features/{cache_name}_v1.parquet"
+            )
 
 
 if __name__ == "__main__":
