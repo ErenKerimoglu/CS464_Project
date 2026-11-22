@@ -20,7 +20,7 @@ import torch
 from galaxy.data.dataset import build_dataloaders
 from galaxy.data.transforms import GalaxyPreprocess
 from galaxy.evaluation.predict import default_checkpoint, evaluate, load_checkpoint_model, resolve_device
-from galaxy.evaluation.results import TRAIN_SUMMARY_FILE, eval_name_for, load_train_summary
+from galaxy.evaluation.results import TRAIN_SUMMARY_FILE, eval_name_for, load_train_summary, training_extra
 from galaxy.models.utils import count_params
 from galaxy.utils.config import apply_overrides
 from galaxy.utils.seed import seed_everything
@@ -93,12 +93,9 @@ def main(argv=None) -> int:
     loader = build_dataloaders(runtime_cfg, splits=(args.eval,))[args.eval]
 
     train_summary = load_train_summary(args.run_dir)
-    extra = {
-        "n_params": count_params(model),
-        "train_time_s": train_summary.get("train_time_s"),
-        "peak_mem_gb": train_summary.get("peak_mem_gb"),
-        **extra,
-    }
+    extra = {**training_extra(train_summary), **extra}
+    if extra["n_params"] is None:
+        extra["n_params"] = count_params(model)
     eval_name = eval_name_for(args.eval, args.rotate, args.corruption, args.severity, args.tta8)
     print(f"Evaluating {ckpt} on {args.eval} ({len(loader.dataset)} images) as '{eval_name}' on {device}")
     if not train_summary:

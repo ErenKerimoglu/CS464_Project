@@ -29,8 +29,9 @@ results/
     "per_class_recall": [], "per_class_precision": [], "per_class_f1": [],
     "confusion_matrix": [], "n_samples": 0
   },
-  "extra": {"rotation_deg": null, "corruption": null, "severity": null,
-            "n_params": null, "train_time_s": null, "peak_mem_gb": null}
+  "extra": {"rotation_deg": null, "corruption": null, "severity": null, "tta": null,
+            "n_params": null, "train_time_s": null, "peak_mem_gb": null,
+            "best_epoch": null, "epochs_trained": null}
 }
 ```
 Classical models write exactly the same schema (`model` = `logreg` | `svm_rbf` | `xgboost`).

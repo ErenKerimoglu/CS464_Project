@@ -27,9 +27,13 @@ from galaxy.constants import CLASS_SHORT, RUNS_DIR, SPLIT_VERSION
 
 SPLITS = ("train", "val", "test")
 # Keys every ``extra`` block contains (null when not applicable), so all result files have the same columns.
-DEFAULT_EXTRA: dict[str, Any] = {"rotation_deg": None, "corruption": None, "severity": None,
-                                 "n_params": None, "train_time_s": None, "peak_mem_gb": None}
+DEFAULT_EXTRA: dict[str, Any] = {"rotation_deg": None, "corruption": None, "severity": None, "tta": None,
+                                 "n_params": None, "train_time_s": None, "peak_mem_gb": None,
+                                 "best_epoch": None, "epochs_trained": None}
 TRAIN_SUMMARY_FILE = "train_summary.json"
+# Keys copied from train_summary.json into the ``extra`` block of every eval of a deep run (train.py and evaluate.py
+# both use this, so re-evaluating a run reproduces its result file).
+TRAIN_EXTRA_KEYS = ("n_params", "train_time_s", "peak_mem_gb", "best_epoch", "epochs_trained")
 _SEED_DIR = re.compile(r"^seed(\d+)$")
 
 
@@ -176,6 +180,11 @@ def load_train_summary(run_dir: Path) -> dict:
     """Contents of ``train_summary.json`` written by the Trainer (#4), or ``{}`` if the run has none."""
     path = Path(run_dir) / TRAIN_SUMMARY_FILE
     return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+
+
+def training_extra(summary: dict) -> dict:
+    """The :data:`TRAIN_EXTRA_KEYS` of a train summary (missing keys → ``None``)."""
+    return {k: summary.get(k) for k in TRAIN_EXTRA_KEYS}
 
 
 def flatten_eval(record: dict) -> dict:

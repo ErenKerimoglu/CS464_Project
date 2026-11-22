@@ -81,14 +81,15 @@ def default_checkpoint(run_dir: Path, name: str = "best.pt") -> Path:
     return CKPT_DIR.joinpath(*run_dir.parts[-3:], name)
 
 
-def model_from_config(config: dict, num_classes: int | None = None) -> nn.Module:
-    """Rebuild the architecture of a run from its config, **without** downloading pretrained weights."""
+def model_from_config(config: dict, num_classes: int | None = None, load_pretrained: bool = False) -> nn.Module:
+    """Build the model of ``config["model"]``. By default **without** downloading pretrained weights (evaluation
+    loads a checkpoint anyway); training passes ``load_pretrained=True`` to honour ``model.pretrained``."""
     from galaxy.constants import NUM_CLASSES
     from galaxy.models import build_model
 
     kwargs = dict(config["model"])
     name = kwargs.pop("name")
-    kwargs["pretrained"] = False
+    kwargs["pretrained"] = bool(kwargs.get("pretrained", False)) and load_pretrained
     return build_model(name, num_classes=num_classes or NUM_CLASSES, **kwargs)
 
 
