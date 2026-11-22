@@ -86,7 +86,8 @@ class EquivariantCNN(nn.Module):
 
     def forward_features(self, x: torch.Tensor) -> torch.Tensor:
         """Invariant feature embedding before the classifier, shape [B, D]."""
-        features = self.mask(x)
+        features = enn.GeometricTensor(x, self.mask.input_type)
+        features = self.mask(features)
         for block in self.blocks:
             features = block(features)
         features = self.group_pool(features)
