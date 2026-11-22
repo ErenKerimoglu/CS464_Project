@@ -1,9 +1,16 @@
 """Tests for classical estimator construction."""
 from __future__ import annotations
 
+from pathlib import Path
+from runpy import run_path
+
 import numpy as np
 
-from scripts.train_classical import DEFAULT_PARAMS, _make_estimator
+_train_classical = run_path(
+    str(Path(__file__).resolve().parents[1] / "scripts" / "train_classical.py")
+)
+DEFAULT_PARAMS = _train_classical["DEFAULT_PARAMS"]
+_make_estimator = _train_classical["_make_estimator"]
 
 
 def test_logreg_and_svm_produce_ten_class_probabilities():
