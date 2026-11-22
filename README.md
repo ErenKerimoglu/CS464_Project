@@ -40,6 +40,10 @@ pip install -e ".[all,dev]"        # full: deep + classical + tuning + escnn (GP
 pytest && ruff check .
 ```
 
+For the equivariant models, `escnn==1.0.11` is pinned. On Windows, install Microsoft C++ Build Tools if the
+`lie-learn` transitive dependency needs to compile (CPU test coverage is otherwise available through
+`pytest.importorskip("escnn")`). Kaggle and Colab Linux environments are the intended GPU runtime.
+
 ## Reproducing results (filled in as the issues land)
 ```bash
 python scripts/prepare_data.py                                          # #2, #3: download, dedup, split, cache
