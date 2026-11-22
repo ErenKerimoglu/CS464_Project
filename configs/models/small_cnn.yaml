@@ -1,5 +1,6 @@
-# Provisional; finalized in #6 and tuned in #15.
+# From-scratch CNN baseline (#6). Scratch recipe of PROJECT_PLAN §3.2. Tuned values land in
+# configs/experiments/model_family/small_cnn.yaml (#15).
 defaults: [base.yaml]
-model: {name: small_cnn, pretrained: false}
-preprocess: {out_size: 128}
+model: {name: small_cnn, pretrained: false, input_size: 128, dropout: 0.3}
+preprocess: {out_size: 128}   # must equal model.input_size
 train: {max_epochs: 60, lr: 1.0e-3}
