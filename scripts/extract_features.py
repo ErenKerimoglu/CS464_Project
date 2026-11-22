@@ -29,8 +29,10 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _cache_name(feature: str, rotate_deg: float, corruption: str, severity: int) -> str:
+def _cache_name(feature: str, rotate_deg: float, corruption: str, severity: int, split: str = "all") -> str:
     name = feature
+    if split != "all":  # a partial cache must never be mistaken for the full one
+        name += f"_{split}"
     if rotate_deg != 0:
         name += f"_rot{int(round(rotate_deg)) % 360:03d}"
     if corruption != "none":
@@ -57,7 +59,7 @@ def main() -> None:
 
     for feature in args.features:
         fn = hog_features if feature == "hog" else color_features
-        cache_name = _cache_name(feature, args.rotate, args.corruption, args.severity)
+        cache_name = _cache_name(feature, args.rotate, args.corruption, args.severity, args.split)
 
         def transform(image: np.ndarray) -> np.ndarray:
             raw = rotate_np(image, args.rotate) if args.rotate != 0 else _prepare_image(image)
