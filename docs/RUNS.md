@@ -6,8 +6,15 @@ the GPU quota across accounts (PROJECT_PLAN §7). Maintained by everyone, set up
 | experiment | run_name | seeds | owner | platform / account | status | checkpoint location | commit |
 |------------|----------|-------|-------|--------------------|--------|---------------------|--------|
 | model_family | small_cnn (smoke test) | 0 | Berkay | Kaggle / berkay | planned | – | – |
+| debug | small_cnn (runner dry run, #10, example row) | 0 | Ege | Kaggle / egeural | planned | Kaggle output of `kaggle-runner` v1 → `checkpoints/debug/small_cnn/seed0/` | – |
 
 Status values: `planned` · `running` · `done` · `failed (reason)` · `results merged (#PR)`.
+
+* **seeds:** `0,1,2` for a full batch. Use one row per batch, not one per seed.
+* **checkpoint location:** where `best.pt` / `last.pt` can be found later. Kaggle: *notebook name + version* (the
+  `checkpoints/` folder of its Output). Colab: `Drive/<DRIVE_DIR>/checkpoints/...` and whose Drive it is. Shared runs
+  (#13, #19): the team checkpoint dataset.
+* **commit:** the short hash the runner prints (`running commit ...`). It is also stored in every `eval_*.json`.
 
 ## Input pipeline throughput (#9, Kaggle Tesla T4, 4 CPUs, batch 64)
 | setting | loader only | loader + GPU preprocess | preprocess only |

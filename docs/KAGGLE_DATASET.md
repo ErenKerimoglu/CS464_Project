@@ -20,6 +20,17 @@ cache (about 12 minutes) at the start of every session. Part of #10.
 The input folder is read-only. Feature caches, checkpoints and results are still written under `/kaggle/working`.
 To point at another location, set `GALAXY_PROCESSED_DIR`.
 
+## Colab: the Google Drive copy
+Colab cannot attach Kaggle datasets, so `notebooks/colab_runner.ipynb` reads the same two files from Drive:
+`<DRIVE_DIR>/processed/images_256.npy` and `meta.csv` (default `DRIVE_DIR` = `My Drive/CS464_galaxy`). They are
+copied to the Colab disk at the start of each session, because memmap reads over Drive are slow.
+Two ways to get them there:
+* **Shared folder:** one member puts `processed/` into a Drive folder and shares it with the team. Everyone else
+  opens it → **Organize → Add shortcut** → *My Drive*, named `CS464_galaxy`.
+* **From Kaggle, per person:** in the Colab runner set `DATA_SOURCE = "kaggle"` and
+  `KAGGLE_DATASET = "<owner>/galaxy10-decals-processed-v1"`, and add the Colab secrets `KAGGLE_USERNAME` /
+  `KAGGLE_KEY`. With `SAVE_TO_DRIVE = True` the first run also writes the Drive copy.
+
 ## Build it (once, by one person; done by Eren)
 1. kaggle.com → **Create → New Notebook** → **File → Import Notebook** → GitHub tab →
    `https://github.com/ErenKerimoglu/CS464_Project/blob/main/notebooks/02_build_kaggle_dataset.ipynb`

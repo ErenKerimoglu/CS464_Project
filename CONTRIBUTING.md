@@ -31,9 +31,33 @@ Do not push directly to `main`. Do not force-push shared branches.
 ## Running experiments
 1. Smoke test first: `--set train.max_epochs=1 data.fraction=0.1`.
 2. Add a row in [docs/RUNS.md](docs/RUNS.md) (status `planned` → `running`).
-3. Run on Kaggle/Colab with the runner notebooks (#10). Pass `--resume` after a session ends.
-4. Download `results/runs/<experiment>/<run_name>/` and commit it on a `results/<issue>-<name>` branch → PR.
-5. Upload the `best.pt` of shared runs (model family, escnn) to the team checkpoint dataset and note the location in RUNS.md.
+3. Run on Kaggle or Colab with the runner notebooks (#10):
+   * [`notebooks/kaggle_runner.ipynb`](notebooks/kaggle_runner.ipynb): attach the team dataset, set `BRANCH` and
+     `RUN_CMDS`, then *Run All* (short runs) or *Save Version → Save & Run All* (long runs, up to 12 h in the
+     background). Checkpoints go to `/kaggle/working/checkpoints`.
+   * [`notebooks/colab_runner.ipynb`](notebooks/colab_runner.ipynb): same, with checkpoints on Google Drive.
+   * After a session ends, run the same commands with `--resume`. On Kaggle, first attach the previous version's
+     output and set `RESUME_FROM`. Training continues exactly from `last.pt`, including `train_log.csv`.
+4. Commit the results (below). Upload the `best.pt` of shared runs (model family, escnn) to the team checkpoint
+   dataset and note the location in RUNS.md.
+
+## Results workflow
+Result files are small (metrics JSON, float16 predictions, logs) and are committed. Checkpoints never are.
+1. The last cell of the runner notebook copies every result file written in that session to `results_export/`,
+   zips it, and prints the exact git commands. Download `results_export.zip` (Kaggle: **Output** tab of the saved
+   version · Colab: it is in your Drive folder).
+2. In your local clone:
+   ```bash
+   git checkout main && git pull
+   git checkout -b results/<experiment>             # e.g. results/e3_data_eff
+   unzip -o results_export.zip -d .                 # extracts into results/runs/<experiment>/<run_name>/seed<k>/
+   git add results/runs/<experiment>
+   git commit -m "Add <experiment> results (#<issue>)"
+   git push -u origin results/<experiment>
+   ```
+3. Open a PR with `Closes #<issue>` if it finishes the issue, and update the run's row in `docs/RUNS.md`
+   (status `results merged (#PR)`, checkpoint location, commit). Check that every `eval_*.json` has a clean
+   `git_commit` (no `-dirty` suffix): the runner notebooks always run a clean checkout.
 
 ## Files that must never be committed
 Raw/processed data (`*.h5`, `*.npy`, `*.parquet`), checkpoints (`*.pt`), API keys/tokens, large notebook outputs.

@@ -5,6 +5,7 @@ import copy
 import csv
 import importlib.util
 import json
+import shutil
 
 import numpy as np
 import pytest
@@ -150,6 +151,7 @@ def test_resume_continues_exactly(datasets, tmp_path):
     with pytest.raises(KeyboardInterrupt):
         killed.fit()
     assert torch.load(tmp_path / "killed" / "ckpt" / "last.pt", weights_only=False)["epoch"] == 0
+    shutil.rmtree(tmp_path / "killed" / "run")  # new Kaggle/Colab session: fresh clone, only the checkpoint survives
 
     resumed = make_trainer(cfg, datasets, tmp_path / "killed")  # a fresh process: new model, new optimizer
     summary = resumed.fit(resume=True)

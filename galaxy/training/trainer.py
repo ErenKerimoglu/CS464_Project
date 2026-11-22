@@ -123,6 +123,7 @@ class Trainer:
         self.peak_mem_gb = 0.0
         self.finished = False
         self.stopped_early = False
+        self.log_rows: list[dict] = []   # train_log.csv rows, also stored in last.pt (fresh clones can resume)
 
     # ------------------------------------------------------------------ helpers
     @property
@@ -181,6 +182,7 @@ class Trainer:
             "peak_mem_gb": self.peak_mem_gb,
             "finished": self.finished,
             "stopped_early": self.stopped_early,
+            "log": self.log_rows,
             "monitor": self.monitor,
             "config": self.cfg,
             "rng": {"python": random.getstate(), "numpy": np.random.get_state(),
@@ -217,14 +219,21 @@ class Trainer:
         torch.set_rng_state(rng["torch"])
         if rng.get("cuda") is not None and torch.cuda.is_available():
             torch.cuda.set_rng_state_all(rng["cuda"])
-        self._truncate_log(self.epoch)
+        if ckpt.get("log") is not None:
+            # Rewrite the log from the checkpoint: works in a fresh clone (Kaggle/Colab sessions) and drops rows of
+            # an epoch that was logged but not checkpointed before a crash.
+            self.log_rows = list(ckpt["log"])
+            self._write_log(self.log_rows, mode="w")
+        else:
+            self._truncate_log(self.epoch)
 
     def _truncate_log(self, last_epoch: int) -> None:
-        """Drop log rows of epochs after ``last_epoch`` (written just before a crash, before ``last.pt``)."""
+        """Drop log rows of epochs after ``last_epoch`` (fallback for checkpoints without a stored log)."""
         if not self.log_path.exists():
             return
         with open(self.log_path, newline="", encoding="utf-8") as f:
             rows = [r for r in csv.DictReader(f) if int(r["epoch"]) <= last_epoch]
+        self.log_rows = rows
         self._write_log(rows, mode="w")
 
     def _write_log(self, rows: list[dict], mode: str = "a") -> None:
@@ -310,9 +319,11 @@ class Trainer:
                 self.finished = True
 
             lr = self.optimizer.param_groups[0]["lr"]
-            self._write_log([{"epoch": epoch, "train_loss": f"{train_loss:.6f}", "val_loss": f"{val['val_loss']:.6f}",
-                              "val_acc": f"{val['val_acc']:.6f}", "val_macro_f1": f"{val['val_macro_f1']:.6f}",
-                              "lr": f"{lr:.3e}", "time": f"{dt:.1f}"}])
+            row = {"epoch": epoch, "train_loss": f"{train_loss:.6f}", "val_loss": f"{val['val_loss']:.6f}",
+                   "val_acc": f"{val['val_acc']:.6f}", "val_macro_f1": f"{val['val_macro_f1']:.6f}",
+                   "lr": f"{lr:.3e}", "time": f"{dt:.1f}"}
+            self.log_rows.append(row)
+            self._write_log([row])
             self.save_last()
             self.write_summary()
             self._log(f"epoch {epoch + 1:>3}/{self.max_epochs}  train_loss {train_loss:.4f}  "
