@@ -90,3 +90,39 @@ def test_utils():
     summary = model_summary(model)
     assert "SmallCNN" in summary and "(1, 10)" in summary
     assert model.training  # restored
+
+
+# ---- timm backbones (#12) ----
+TIMM_MODELS = ["resnet50", "convnext_tiny", "vit_small"]
+
+
+@pytest.mark.parametrize("name", TIMM_MODELS)
+def test_timm_embedding_and_param_groups(name):
+    model = _build(name)
+    dims = {"resnet50": 2048, "convnext_tiny": 768, "vit_small": 384}
+    assert model.input_size == 224
+    assert model.forward_features(torch.randn(2, 3, 224, 224)).shape == (2, dims[name])
+    head, backbone = model.head_parameters(), model.backbone_parameters()
+    assert len(head) + len(backbone) == len(list(model.parameters()))
+    assert {id(p) for p in head}.isdisjoint({id(p) for p in backbone})
+    assert head[0].shape[0] == NUM_CLASSES or head[0].shape[-1] == NUM_CLASSES
+
+
+@pytest.mark.parametrize("name", TIMM_MODELS)
+def test_timm_gradcam_layer_is_in_forward_path(name):
+    model = _build(name).eval()
+    seen = []
+    handle = model.gradcam_target_layer.register_forward_hook(lambda m, i, o: seen.append(o))
+    model(torch.randn(1, 3, 224, 224))
+    handle.remove()
+    assert len(seen) == 1
+    if name == "vit_small":
+        assert seen[0].shape == (1, 197, 384)
+        assert model.reshape_transform(seen[0]).shape == (1, 384, 14, 14)
+    else:
+        assert seen[0].ndim == 4 and model.reshape_transform is None
+
+
+def test_timm_drop_path_and_config_keys():
+    model = build_model("convnext_tiny", pretrained=False, drop_path=0.1, freeze_backbone=False)
+    assert model.net.stages[-1].blocks[-1].drop_path.drop_prob > 0

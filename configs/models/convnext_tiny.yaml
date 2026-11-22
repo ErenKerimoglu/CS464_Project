@@ -1,5 +1,6 @@
-# Provisional; finalized in #12 and tuned in #15.
+# ImageNet-pretrained convnext_tiny (#12), full fine-tuning recipe of PROJECT_PLAN §3.2. Tuned values land in
+# configs/experiments/model_family/convnext_tiny.yaml (#15). Inputs use our per-band stats, not ImageNet mean/std.
 defaults: [base.yaml]
 model: {name: convnext_tiny, pretrained: true, drop_path: 0.1}
-preprocess: {out_size: 224}
+preprocess: {policy: rotflip, out_size: 224}
 train: {max_epochs: 30, lr: 1.0e-4}
