@@ -41,6 +41,7 @@ class EquivariantCNN(nn.Module):
         self.r2_act = gspaces.flipRot2dOnR2(N=4) if group == "d4" else gspaces.rot2dOnR2(N=8)
 
         trivial = enn.FieldType(self.r2_act, [self.r2_act.trivial_repr] * 3)
+        self.input_type = trivial
         self.mask = enn.MaskModule(trivial, S=input_size, margin=1)
 
         widths = [width, width, width * 2, width * 2, width * 4]
@@ -86,7 +87,7 @@ class EquivariantCNN(nn.Module):
 
     def forward_features(self, x: torch.Tensor) -> torch.Tensor:
         """Invariant feature embedding before the classifier, shape [B, D]."""
-        features = enn.GeometricTensor(x, self.mask.input_type)
+        features = enn.GeometricTensor(x, self.input_type)
         features = self.mask(features)
         for block in self.blocks:
             features = block(features)
