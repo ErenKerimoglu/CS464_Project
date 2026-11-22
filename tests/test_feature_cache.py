@@ -10,6 +10,12 @@ from galaxy.features import cache
 
 def test_extract_all_timeout_uses_failure_row(tmp_path, monkeypatch):
     monkeypatch.setattr(cache, "FEATURES_DIR", tmp_path)
+    written = []
+
+    def record_parquet_write(_frame, path, index=False):
+        written.append((path, index))
+
+    monkeypatch.setattr(cache.pd.DataFrame, "to_parquet", record_parquet_write)
     monkeypatch.setattr(
         cache,
         "load_raw_images",
@@ -31,3 +37,4 @@ def test_extract_all_timeout_uses_failure_row(tmp_path, monkeypatch):
     assert result.loc[0, "orig_index"] == 42
     assert result.loc[0, "morph_failed"] == 1
     assert np.isnan(result.loc[0, "value"])
+    assert written == [(tmp_path / "timeout_probe_v1.parquet", False)]

@@ -8,8 +8,20 @@ import pytest
 from galaxy.features import pipeline
 
 
-def _write_feature_cache(directory, name, frame):
-    frame.to_parquet(directory / f"{name}_v1.parquet", index=False)
+def _mock_feature_caches(directory, monkeypatch):
+    caches = {}
+
+    def read_parquet(path):
+        return caches[path]
+
+    monkeypatch.setattr(pipeline.pd, "read_parquet", read_parquet)
+
+    def write_cache(name, frame):
+        path = directory / f"{name}_v1.parquet"
+        path.touch()
+        caches[path] = frame
+
+    return write_cache
 
 
 def test_load_feature_matrix_aligns_caches_and_applies_train_fraction(tmp_path, monkeypatch):
@@ -23,12 +35,13 @@ def test_load_feature_matrix_aligns_caches_and_applies_train_fraction(tmp_path, 
     split.to_csv(split_path, index=False)
     monkeypatch.setattr(pipeline, "SPLIT_FILE", split_path)
     monkeypatch.setattr(pipeline, "FEATURES_DIR", tmp_path)
+    write_cache = _mock_feature_caches(tmp_path, monkeypatch)
     cache_rows = [10, 40, 30, 20]
-    _write_feature_cache(tmp_path, "hog", pd.DataFrame({
+    write_cache("hog", pd.DataFrame({
         "orig_index": cache_rows,
         "feature_0000": [100.0, 400.0, 300.0, 200.0],
     }))
-    _write_feature_cache(tmp_path, "color", pd.DataFrame({
+    write_cache("color", pd.DataFrame({
         "orig_index": cache_rows,
         "g_hist_00": [1.0, 4.0, 3.0, 2.0],
     }))
@@ -57,7 +70,8 @@ def test_load_feature_matrix_fails_when_cache_is_incomplete(tmp_path, monkeypatc
     }).to_csv(split_path, index=False)
     monkeypatch.setattr(pipeline, "SPLIT_FILE", split_path)
     monkeypatch.setattr(pipeline, "FEATURES_DIR", tmp_path)
-    _write_feature_cache(tmp_path, "hog", pd.DataFrame({
+    write_cache = _mock_feature_caches(tmp_path, monkeypatch)
+    write_cache("hog", pd.DataFrame({
         "orig_index": [1],
         "feature_0000": [1.0],
     }))

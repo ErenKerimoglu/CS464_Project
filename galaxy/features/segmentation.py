@@ -43,7 +43,7 @@ def estimate_background(img_band: np.ndarray) -> tuple[float, float]:
 def segment_central_source(img_band: np.ndarray) -> tuple[np.ndarray, int, np.ndarray]:
     """Return the central-source-only map, its label, and the full deblended segmentation map."""
     from photutils.segmentation import deblend_sources, detect_sources
-    from photutils.utils.exceptions import NoDetectionsWarning, PhotutilsDeprecationWarning
+    from photutils.utils.exceptions import NoDetectionsWarning
 
     data = _image_band(img_band)
     background, background_std = estimate_background(data)
@@ -51,7 +51,7 @@ def segment_central_source(img_band: np.ndarray) -> tuple[np.ndarray, int, np.nd
     threshold = max(1.5 * background_std, np.finfo(np.float64).eps)
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", NoDetectionsWarning)
-        detected = detect_sources(signal, threshold, n_pixels=10)
+        detected = detect_sources(signal, threshold, 10)
     if detected is None:
         empty = np.zeros(data.shape, dtype=np.int32)
         return empty.copy(), 0, empty
@@ -60,13 +60,11 @@ def segment_central_source(img_band: np.ndarray) -> tuple[np.ndarray, int, np.nd
         warnings.filterwarnings(
             "ignore",
             message=".*progress_bar.*deprecated.*",
-            category=PhotutilsDeprecationWarning,
         )
         segmentation = deblend_sources(
             signal,
             detected,
-            n_pixels=10,
-            n_levels=32,
+            10,
             contrast=0.001,
             progress_bar=False,
         )
