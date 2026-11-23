@@ -4,6 +4,12 @@ Every work item is a GitHub issue. The full texts are in [`docs/issues/`](issues
 acceptance criteria. This page shows **who owns what, in which order, and what depends on what.**
 Technical decisions are in [PROJECT_PLAN.md](PROJECT_PLAN.md).
 
+> **Scope update (23 Nov 2026, TA feedback):** ownership is unchanged, but the priorities are new. **Core:** #13, #14,
+> #15, #17, #19, #23, #24, the confusion-matrix part of #25. **Additional:** #18 (E4) and #21 (E2). **Optional**
+> (1 seed, after agreeing at a progress presentation): #20 (E3), #22 (E5), the Grad-CAM/t-SNE part of #25, and #26.
+> Owners of optional experiments help run core seeds on their Kaggle accounts first. See
+> [TA_FEEDBACK.md](TA_FEEDBACK.md) and PROJECT_PLAN §6/§8.
+
 ## 1. Roles
 
 Each member owns one **technical area** (the code modules in it) and the **experiments** that fit that area.

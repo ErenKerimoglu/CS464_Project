@@ -8,6 +8,12 @@ Each work item is a GitHub issue; the issue texts are also kept in [`docs/issues
 > **Rule of thumb:** if this document and an issue disagree, raise it in the issue thread and fix the document.
 > Everyone works against the **contracts** in §4. Do not change one silently, because other people's code depends on it.
 
+> **Scope update (23 Nov 2026, TA feedback on the proposal, graded 5/5):** focus on the **orientation experiment (E1)**
+> as the main experiment, plus **two additional experiments: E2 transfer learning and E4 class imbalance**. E3, E5,
+> the Grad-CAM/t-SNE part of E6 and the SDSS stretch goal are now **optional**, to be discussed at the progress
+> presentations. Experiments start now, not in the last weeks. Details: §6 *Scope tiers*, §8, and
+> [TA_FEEDBACK.md](TA_FEEDBACK.md), which also lists where we deliberately keep our own approach.
+
 ---
 
 ## 0. Contents
@@ -305,21 +311,33 @@ Each row is one aspect. The issue number is where the work is specified in detai
 
 All deep runs: 3 seeds. "Reused" means the run already exists from another experiment and is **not** retrained.
 
-| Exp. | Model(s) | Variants | New training runs | Evaluation-only work |
-|------|----------|----------|-------------------|----------------------|
-| Classical (#14) | LR, SVM-RBF, XGB | tuned | 1 + 1 + 3 | – |
-| Family (#19) | SmallCNN, ResNet-50, ConvNeXt-T, ViT-S | `rotflip`, tuned | 4 × 3 = **12** | – |
-| Escnn (#13) | escnn D4 | `rotflip` (and `none`) | 3 (+3) | – |
-| E1a (#17) | ResNet-50, ConvNeXt-T | `none` (`rotflip` reused) | 2 × 3 = **6** (+3 `d4` optional) | TTA-8 on every deep run |
-| E1b (#23, #24) | all | – | 0 | 24 angles × every model |
-| E2 (#21) | ResNet-50, ViT-S | scratch, linear (full FT reused) | 2 × 2 × 3 = **12** | – |
-| E3 (#20) | ResNet-50, SmallCNN, escnn | 10/25/50 % (100 % reused) | 3 × 3 × 3 = **27** (small) | – |
-| E4 (#18) | ResNet-50 | wCE, focal, oversample (CE reused) | 3 × 3 = **9** | – |
-| E5 (#22) | all | 3 corruptions × 3–4 severities | 0 | about 11 evaluations × every model |
-| E6 (#25) | best model, SmallCNN, escnn | – | 0 | Grad-CAM, t-SNE |
-| Tuning (#15) | 4 models (+escnn) | about 15 trials each, short schedule | about 60 short runs | – |
+| Exp. | Tier | Model(s) | Variants | New training runs | Evaluation-only work |
+|------|------|----------|----------|-------------------|----------------------|
+| Classical (#14) | **Core** | LR, SVM-RBF, XGB | tuned | 1 + 1 + 3 | – |
+| Family (#19) | **Core** | SmallCNN, ResNet-50, ConvNeXt-T, ViT-S | `rotflip`, tuned | 4 × 3 = **12** | – |
+| Escnn (#13) | **Core** (E1 arm) | escnn D4 | `rotflip` (and `none`) | 3 (+3) | – |
+| E1a (#17) | **Core: main experiment** | ResNet-50, ConvNeXt-T | `none` (`rotflip` reused) | 2 × 3 = **6** (+3 `d4` optional) | TTA-8 on every deep run |
+| E1b (#23, #24) | **Core: main experiment** | all | – | 0 | 24 angles × every model |
+| E2 (#21) | **Additional** | ResNet-50, ViT-S | scratch, linear (full FT reused) | 2 × 2 × 3 = **12** | – |
+| E4 (#18) | **Additional** | ResNet-50 | wCE, focal, oversample (CE reused) | 3 × 3 = **9** | – |
+| E6 core (#25) | **Core** (reporting) | all trained models | confusion matrices + top confused pairs | 0 | from saved predictions |
+| Tuning (#15) | **Core** | 4 models (+escnn) | about 15 trials each, short schedule | about 60 short runs | – |
+| E3 (#20) | *Optional* | ResNet-50, SmallCNN, escnn | 10/25/50 % (100 % reused) | 3 × 3 × **1 seed** = 9 (small) | – |
+| E5 (#22) | *Optional* | all | 3 corruptions × 3–4 severities | 0 | about 11 evaluations × every model |
+| E6 extra (#25) | *Optional* | best model, SmallCNN, escnn | Grad-CAM on-galaxy score, t-SNE | 0 | Grad-CAM, t-SNE |
+| SDSS (#26) | *Stretch* | best models | – | 0 | one evaluation each |
 
-**Total:** about 75 full training runs + about 60 short tuning runs. See §7.
+**Total core + additional:** about 48 full training runs + about 60 short tuning runs (was about 75 + 60).
+
+### Scope tiers (TA feedback, 23 Nov)
+* **Core:** the orientation study (E1a, E1b, escnn, classical orientation #24) and what it needs: the family
+  comparison, classical baselines and tuning. These define the project and go first.
+* **Additional:** E2 transfer learning and E4 class imbalance, the two extra experiments the TA suggested.
+* **Optional:** E3, E5, the Grad-CAM/t-SNE part of E6, and SDSS. Started only once the core and additional runs are
+  done, with **1 seed** instead of 3, and only after agreeing at a progress presentation. The code that already
+  exists for them stays merged; nothing is deleted.
+* **Seeds:** all core and additional deep runs keep 3 seeds (mean ± std). Measured cost makes this affordable: a
+  30-epoch ResNet-50 run is about 30 min on a T4 (§7).
 
 ### Per-experiment outputs (what goes into the report)
 | Exp. | Table | Figure |
@@ -335,9 +353,10 @@ All deep runs: 3 seeds. "Reused" means the run already exists from another exper
 ---
 
 ## 7. Compute budget
-* Rough cost: ResNet-50 at 224 px, about 12.4 k training images, T4 + AMP ≈ 1.5–2 min/epoch, so about 45 min for a 25-epoch run.
-  ViT-S and ConvNeXt-T cost about the same. SmallCNN and escnn at 128 px are cheaper.
-* About 75 full runs × about 40 min + tuning ≈ **60–70 GPU-hours**. Kaggle gives 30 GPU-h/week per account, so 5 accounts give
+* **Measured** (Berkay, #12, Kaggle T4 + AMP, batch 64, `docs/RUNS.md`): ResNet-50 55 s/epoch, ConvNeXt-T 63–75 s,
+  ViT-S 43 s, so a 30-epoch fine-tuning run takes 20–40 min (less with early stopping). Estimated before measuring:
+  1.5–2 min/epoch.
+* After the scope update: about 48 full runs × about 30 min + tuning ≈ **30–35 GPU-hours** (was 60–70). Kaggle gives 30 GPU-h/week per account, so 5 accounts give
   about 150 h/week. **The budget fits, but only if runs are spread across all five accounts.** Log every run in `docs/RUNS.md` (#10).
 * Kaggle sessions stop after 12 h. The Trainer checkpoints every epoch and resumes with `--resume`.
 * Always do a 1-epoch smoke test (`--set train.max_epochs=1 data.fraction=0.1`) before starting a 3-seed batch.
@@ -346,15 +365,18 @@ All deep runs: 3 seeds. "Reused" means the run already exists from another exper
 
 ## 8. Timeline & milestones
 
-Start date: Mon 23 Nov 2026. **Shift the dates to match the official CS464 deadlines** once they are announced.
+Start date: Mon 23 Nov 2026. **Pulled forward on 23 Nov** after the TA asked us to speed up and not leave training to
+the last weeks. The foundations (old M0/M1) were already done by 23 Nov: data, Trainer, evaluation, models, runners,
+classical features and the T4 smoke runs are all merged.
 
-| Milestone | Weeks | Dates | Exit criteria |
-|-----------|-------|-------|---------------|
-| **M0 – Foundations** | W1 | 23 Nov – 29 Nov | Split committed, contracts implemented with tests: Trainer, metrics/results I/O, model registry, HOG features, escnn model |
-| **M1 – Pipelines & baselines** | W2 | 30 Nov – 6 Dec | Dataset/GPU preprocessing merged, Kaggle runner works end to end, statmorph features cached, pretrained backbones smoke-tested, first escnn run |
-| **M2 – Core experiments** | W3–W4 | 7 Dec – 20 Dec | Classical baselines, tuned deep models, family comparison, E1a, E3, E4 runs complete |
-| **M3 – Analysis** | W5 | 21 Dec – 27 Dec | E1b sweep + headline figure, E2, E5, E6, classical orientation/data-efficiency, stretch SDSS |
-| **M4 – Report** | W6 | 28 Dec – 3 Jan | Final report + slides, all figures regenerated from committed results |
+| Milestone | Dates | Exit criteria |
+|-----------|-------|---------------|
+| **P1 – Progress report** | **Fri 27 Nov** | At least two models trained on the full data and compared on the same test set (best checkpoint chosen by val macro-F1): ResNet-50, ConvNeXt-T, ViT-S, SmallCNN with default hyperparameters (seed 0), the classical baselines, and a first orientation result (ResNet-50 `none` vs `rotflip` + rotation sweep). Tracked in the progress-report issue. |
+| **M2 – Core experiments** | 28 Nov – 13 Dec | Tuning (#15), family comparison with 3 seeds (#19), escnn (#13), E1a (#17), classical baselines (#14) |
+| **M3 – Additional experiments + analysis** | 14 Dec – 27 Dec | E1b sweep + headline figure (#23, #24), E2 (#21), E4 (#18), confusion analysis (#25). Optional experiments only if agreed and time is left. |
+| **M4 – Report** | 28 Dec – 3 Jan | Final report + slides, all figures regenerated from committed results |
+
+**Shift the dates to match the official CS464 deadlines** once they are announced.
 
 Critical path: **#3 split → #9 dataset → #4 trainer → #12 backbones → #15 tuning → #19 family → #23 synthesis → #27 report.**
 Until #9 is merged, people can develop against the contracts using the synthetic fixtures in `tests/conftest.py`.
@@ -378,7 +400,7 @@ Until #9 is merged, people can develop against the contracts using the synthetic
 - [ ] `split_v1.csv` committed; every result file reports `split_version: v1`.
 - [ ] Every row in every report table regenerates with `python scripts/aggregate_results.py`.
 - [ ] Deep results report mean ± std over 3 seeds. Classical seed handling is stated.
-- [ ] All six experiments + the family comparison have a table/figure and a written conclusion that answers RQ1–RQ6.
+- [ ] The family comparison, E1 (main), E2 and E4 have a table/figure and a written conclusion (RQ1, RQ2, RQ4). Optional experiments (RQ3, RQ5, RQ6) only if they were run.
 - [ ] The headline orientation figure includes **every** model family.
 - [ ] CI is green on `main`. README explains how to reproduce one run end to end.
 - [ ] Final report and slides are submitted.
