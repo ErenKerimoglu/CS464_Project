@@ -124,6 +124,9 @@ def test_export_results_copies_only_new_files(tmp_path):
     new_dir.mkdir(parents=True)
     for name in ("eval_test.json", "preds_test.npz", "train_log.csv"):
         (new_dir / name).write_text("x")
+    table = repo / "results" / "tables" / "rotation_sweep_summary.csv"   # e.g. written by run_rotation_sweep.py
+    table.parent.mkdir(parents=True)
+    table.write_text("x")
 
     dest = tmp_path / "export"
     run_dirs = env.export_results(repo, dest, newer_than=start)
@@ -132,6 +135,7 @@ def test_export_results_copies_only_new_files(tmp_path):
     assert not (dest / "results/runs/model_family").exists()
     with zipfile.ZipFile(tmp_path / "export.zip") as z:
         assert "results/runs/e3_data_eff/small_cnn_f010/seed1/eval_test.json" in z.namelist()
+        assert "results/tables/rotation_sweep_summary.csv" in z.namelist()
 
     text = env.results_instructions(run_dirs, tmp_path / "export.zip", "abc1234")
     assert "git checkout -b results/e3_data_eff" in text and "git add results/runs/e3_data_eff" in text

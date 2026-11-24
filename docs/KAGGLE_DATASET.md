@@ -27,9 +27,14 @@ copied to the Colab disk at the start of each session, because memmap reads over
 Two ways to get them there:
 * **Shared folder:** one member puts `processed/` into a Drive folder and shares it with the team. Everyone else
   opens it → **Organize → Add shortcut** → *My Drive*, named `CS464_galaxy`.
-* **From Kaggle, per person:** in the Colab runner set `DATA_SOURCE = "kaggle"` and
-  `KAGGLE_DATASET = "<owner>/galaxy10-decals-processed-v1"`, and add the Colab secrets `KAGGLE_USERNAME` /
-  `KAGGLE_KEY`. With `SAVE_TO_DRIVE = True` the first run also writes the Drive copy.
+* **From Kaggle, per person:** in the Colab runner set
+  `KAGGLE_DATASET = "<owner>/galaxy10-decals-processed-v1"` and add the Colab secret `KAGGLE_API_TOKEN`
+  (kaggle.com → Settings → API → *Create New Token*; old-style `KAGGLE_USERNAME` / `KAGGLE_KEY` secrets also work).
+  `DATA_SOURCE = "auto"` uses Drive when the copy exists and Kaggle otherwise. With `SAVE_TO_DRIVE = True` the
+  first run also writes the Drive copy. Never paste the token into a cell, an issue or a chat.
+
+**Importing a notebook into Kaggle:** if the GitHub tab of *File → Import Notebook* does not work, download the
+`.ipynb` from GitHub (**Download raw file**) and drag it into the same dialog.
 
 ## Build it (once, by one person; done by Eren)
 1. kaggle.com → **Create → New Notebook** → **File → Import Notebook** → GitHub tab →

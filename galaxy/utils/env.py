@@ -164,21 +164,27 @@ def run_commands(cmds: list[str] | str, cwd: str | Path) -> None:
 
 
 def export_results(repo_dir: str | Path, dest: str | Path, newer_than: float, zip_it: bool = True) -> list[Path]:
-    """Copy every file under ``<repo>/results/runs`` modified after ``newer_than`` (a ``time.time()`` taken before
-    the runs started) to ``<dest>/results/runs/...`` and optionally zip ``dest`` to ``<dest>.zip``.
+    """Copy every file under ``<repo>/results/{runs,tables,figures}`` modified after ``newer_than`` (a
+    ``time.time()`` taken before the runs started) to ``<dest>/results/...`` and optionally zip ``dest`` to
+    ``<dest>.zip``. Tables and figures cover scripts that write there, e.g. the rotation sweep (#23).
 
     Returns the exported run folders (``<experiment>/<run_name>/seed<k>``, relative to ``results/runs``).
     """
     repo_dir, dest = Path(repo_dir), Path(dest)
     runs = repo_dir / "results" / "runs"
     run_dirs: set[Path] = set()
-    for f in sorted(runs.rglob("*")) if runs.is_dir() else []:
-        if f.is_file() and f.name != ".gitkeep" and f.stat().st_mtime >= newer_than:
-            rel = f.relative_to(repo_dir)
-            (dest / rel).parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(f, dest / rel)
-            run_dirs.add(f.parent.relative_to(runs))
-    if zip_it and run_dirs:
+    n_files = 0
+    for sub in ("runs", "tables", "figures"):
+        folder = repo_dir / "results" / sub
+        for f in sorted(folder.rglob("*")) if folder.is_dir() else []:
+            if f.is_file() and f.name != ".gitkeep" and f.stat().st_mtime >= newer_than:
+                rel = f.relative_to(repo_dir)
+                (dest / rel).parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(f, dest / rel)
+                n_files += 1
+                if sub == "runs":
+                    run_dirs.add(f.parent.relative_to(runs))
+    if zip_it and n_files:
         shutil.make_archive(str(dest), "zip", root_dir=dest)
     return sorted(run_dirs)
 
