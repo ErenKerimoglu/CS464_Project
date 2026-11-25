@@ -1,0 +1,240 @@
+{
+  "experiment": "prelim",
+  "run_name": "resnet50_rotflip",
+  "seed": 0,
+  "model": "resnet50",
+  "eval_name": "test_rot255",
+  "split": "test",
+  "split_version": "v1",
+  "git_commit": "6db5495",
+  "timestamp": "2026-11-25T06:54:49",
+  "config": {
+    "experiment": "prelim",
+    "run_name": "resnet50_rotflip",
+    "data": {
+      "split_version": "v1",
+      "fraction": 1.0,
+      "batch_size": 64,
+      "eval_batch_multiplier": 2,
+      "num_workers": 2,
+      "in_memory": false,
+      "pin_memory": true
+    },
+    "preprocess": {
+      "policy": "rotflip",
+      "crop": 180,
+      "out_size": 224
+    },
+    "model": {
+      "name": "resnet50",
+      "pretrained": true,
+      "drop_path": 0.0,
+      "freeze_backbone": false
+    },
+    "train": {
+      "max_epochs": 30,
+      "lr": 0.0001,
+      "head_lr": null,
+      "weight_decay": 0.05,
+      "warmup_epochs": 1,
+      "grad_clip": 1.0,
+      "amp": true,
+      "early_stopping_patience": 8,
+      "monitor": "val_macro_f1"
+    },
+    "loss": {
+      "name": "ce",
+      "label_smoothing": 0.1,
+      "focal_gamma": 2.0,
+      "class_weight_beta": 1.0
+    },
+    "sampler": {
+      "name": "shuffle"
+    },
+    "eval": {
+      "splits": [
+        "val",
+        "test"
+      ]
+    },
+    "_meta": {
+      "config_path": "configs/models/resnet50.yaml"
+    },
+    "seed": 0
+  },
+  "metrics": {
+    "accuracy": 0.8743851683692774,
+    "macro_f1": 0.8593578878636405,
+    "balanced_accuracy": 0.8625542660458769,
+    "per_class_recall": [
+      0.46835443037974683,
+      0.9311594202898551,
+      0.9291139240506329,
+      0.9372937293729373,
+      0.92,
+      0.8660130718954249,
+      0.8681318681318682,
+      0.8097686375321337,
+      0.9671361502347418,
+      0.9285714285714286
+    ],
+    "per_class_precision": [
+      0.6851851851851852,
+      0.8954703832752613,
+      0.9483204134366925,
+      0.9073482428115016,
+      0.8070175438596491,
+      0.9137931034482759,
+      0.7547770700636943,
+      0.7758620689655172,
+      0.9537037037037037,
+      0.9811320754716981
+    ],
+    "per_class_f1": [
+      0.5563909774436091,
+      0.9129662522202486,
+      0.9386189258312021,
+      0.922077922077922,
+      0.8598130841121495,
+      0.8892617449664431,
+      0.8074957410562181,
+      0.7924528301886793,
+      0.9603729603729604,
+      0.9541284403669724
+    ],
+    "confusion_matrix": [
+      [
+        74,
+        5,
+        6,
+        17,
+        2,
+        7,
+        8,
+        36,
+        2,
+        1
+      ],
+      [
+        2,
+        257,
+        6,
+        4,
+        1,
+        0,
+        2,
+        3,
+        1,
+        0
+      ],
+      [
+        5,
+        2,
+        367,
+        0,
+        0,
+        3,
+        14,
+        4,
+        0,
+        0
+      ],
+      [
+        3,
+        4,
+        0,
+        284,
+        4,
+        1,
+        4,
+        3,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        46,
+        0,
+        0,
+        0,
+        1,
+        2
+      ],
+      [
+        7,
+        8,
+        0,
+        2,
+        1,
+        265,
+        6,
+        16,
+        0,
+        1
+      ],
+      [
+        1,
+        0,
+        6,
+        2,
+        0,
+        2,
+        237,
+        24,
+        1,
+        0
+      ],
+      [
+        13,
+        8,
+        2,
+        2,
+        1,
+        6,
+        39,
+        315,
+        3,
+        0
+      ],
+      [
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        206,
+        1
+      ],
+      [
+        2,
+        2,
+        0,
+        1,
+        1,
+        5,
+        3,
+        4,
+        2,
+        260
+      ]
+    ],
+    "n_samples": 2643
+  },
+  "extra": {
+    "rotation_deg": 255.0,
+    "corruption": null,
+    "severity": null,
+    "tta": null,
+    "n_params": 23528522,
+    "train_time_s": 1512.4,
+    "peak_mem_gb": 3.309,
+    "best_epoch": 17,
+    "epochs_trained": 26
+  }
+}

@@ -7,6 +7,7 @@ the GPU quota across accounts (PROJECT_PLAN §7). Maintained by everyone, set up
 |------------|----------|-------|-------|--------------------|--------|---------------------|--------|
 | smoke | small_cnn (#6; 1 epoch, 10 % data) | 0 | Berkay | Kaggle / berkay | done | not kept (smoke test) | e004b4e |
 | smoke | resnet50, convnext_tiny, vit_small (#12; 2 epochs, 100 % data) | 0 | Berkay | Kaggle / berkay | done | not kept (smoke test) | e004b4e |
+| prelim | resnet50_rotflip, resnet50_none (30 epochs max, 100 % data) + test rotation sweep, 24 angles (#23) | 0 | Eren | Colab (free T4) / eren | done | Eren's Drive: `CS464_galaxy/checkpoints/prelim/resnet50_{rotflip,none}/seed0/` | 6db5495 |
 | debug | small_cnn (runner dry run, #10, example row) | 0 | Ege | Kaggle / egeural | planned | Kaggle output of `kaggle-runner` v1 → `checkpoints/debug/small_cnn/seed0/` | – |
 
 Status values: `planned` · `running` · `done` · `failed (reason)` · `results merged (#PR)`.
