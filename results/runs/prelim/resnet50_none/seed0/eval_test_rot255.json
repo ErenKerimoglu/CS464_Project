@@ -1,0 +1,240 @@
+{
+  "experiment": "prelim",
+  "run_name": "resnet50_none",
+  "seed": 0,
+  "model": "resnet50",
+  "eval_name": "test_rot255",
+  "split": "test",
+  "split_version": "v1",
+  "git_commit": "6db5495",
+  "timestamp": "2026-11-25T06:51:11",
+  "config": {
+    "experiment": "prelim",
+    "run_name": "resnet50_none",
+    "data": {
+      "split_version": "v1",
+      "fraction": 1.0,
+      "batch_size": 64,
+      "eval_batch_multiplier": 2,
+      "num_workers": 2,
+      "in_memory": false,
+      "pin_memory": true
+    },
+    "preprocess": {
+      "policy": "none",
+      "crop": 180,
+      "out_size": 224
+    },
+    "model": {
+      "name": "resnet50",
+      "pretrained": true,
+      "drop_path": 0.0,
+      "freeze_backbone": false
+    },
+    "train": {
+      "max_epochs": 30,
+      "lr": 0.0001,
+      "head_lr": null,
+      "weight_decay": 0.05,
+      "warmup_epochs": 1,
+      "grad_clip": 1.0,
+      "amp": true,
+      "early_stopping_patience": 8,
+      "monitor": "val_macro_f1"
+    },
+    "loss": {
+      "name": "ce",
+      "label_smoothing": 0.1,
+      "focal_gamma": 2.0,
+      "class_weight_beta": 1.0
+    },
+    "sampler": {
+      "name": "shuffle"
+    },
+    "eval": {
+      "splits": [
+        "val",
+        "test"
+      ]
+    },
+    "_meta": {
+      "config_path": "configs/models/resnet50.yaml"
+    },
+    "seed": 0
+  },
+  "metrics": {
+    "accuracy": 0.8365493757094211,
+    "macro_f1": 0.808192742950115,
+    "balanced_accuracy": 0.8121387467616292,
+    "per_class_recall": [
+      0.3227848101265823,
+      0.8659420289855072,
+      0.9215189873417722,
+      0.9174917491749175,
+      0.8,
+      0.8594771241830066,
+      0.7948717948717948,
+      0.7634961439588689,
+      0.9436619718309859,
+      0.9321428571428572
+    ],
+    "per_class_precision": [
+      0.6538461538461539,
+      0.8884758364312267,
+      0.914572864321608,
+      0.8660436137071651,
+      0.7017543859649122,
+      0.8651315789473685,
+      0.7138157894736842,
+      0.717391304347826,
+      0.8933333333333333,
+      0.9560439560439561
+    ],
+    "per_class_f1": [
+      0.43220338983050843,
+      0.8770642201834863,
+      0.9180327868852459,
+      0.891025641025641,
+      0.7476635514018691,
+      0.862295081967213,
+      0.7521663778162911,
+      0.7397260273972602,
+      0.9178082191780823,
+      0.9439421338155516
+    ],
+    "confusion_matrix": [
+      [
+        51,
+        7,
+        12,
+        17,
+        1,
+        11,
+        10,
+        44,
+        2,
+        3
+      ],
+      [
+        9,
+        239,
+        10,
+        5,
+        1,
+        1,
+        1,
+        7,
+        2,
+        1
+      ],
+      [
+        1,
+        2,
+        364,
+        3,
+        0,
+        2,
+        13,
+        10,
+        0,
+        0
+      ],
+      [
+        2,
+        3,
+        2,
+        278,
+        9,
+        0,
+        6,
+        3,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        3,
+        40,
+        0,
+        1,
+        0,
+        2,
+        4
+      ],
+      [
+        4,
+        5,
+        3,
+        5,
+        2,
+        263,
+        10,
+        10,
+        3,
+        1
+      ],
+      [
+        0,
+        0,
+        4,
+        4,
+        0,
+        6,
+        217,
+        40,
+        2,
+        0
+      ],
+      [
+        11,
+        9,
+        3,
+        6,
+        1,
+        15,
+        40,
+        297,
+        7,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        1,
+        1,
+        4,
+        2,
+        201,
+        3
+      ],
+      [
+        0,
+        3,
+        0,
+        0,
+        2,
+        5,
+        2,
+        1,
+        6,
+        261
+      ]
+    ],
+    "n_samples": 2643
+  },
+  "extra": {
+    "rotation_deg": 255.0,
+    "corruption": null,
+    "severity": null,
+    "tta": null,
+    "n_params": 23528522,
+    "train_time_s": 1737.9,
+    "peak_mem_gb": 3.307,
+    "best_epoch": 21,
+    "epochs_trained": 30
+  }
+}

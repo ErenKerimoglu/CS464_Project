@@ -1,0 +1,3 @@
+experiment,run_name,tta,n_angles,n_seeds,acc_mean_over_angles,acc_worst,worst_angle,orientation_sensitivity,f1_mean_over_angles
+prelim,resnet50_rotflip,none,24,1,0.8757251860259806,0.8694665153234961,330.0,0.003102725645169327,0.8591461038685052
+prelim,resnet50_none,none,24,1,0.8358084247698322,0.8274687854710556,240.0,0.004769010139011615,0.8064742729246275

@@ -1,0 +1,240 @@
+{
+  "experiment": "prelim",
+  "run_name": "resnet50_none",
+  "seed": 0,
+  "model": "resnet50",
+  "eval_name": "val",
+  "split": "val",
+  "split_version": "v1",
+  "git_commit": "6db5495",
+  "timestamp": "2026-11-25T06:48:02",
+  "config": {
+    "experiment": "prelim",
+    "run_name": "resnet50_none",
+    "data": {
+      "split_version": "v1",
+      "fraction": 1.0,
+      "batch_size": 64,
+      "eval_batch_multiplier": 2,
+      "num_workers": 2,
+      "in_memory": false,
+      "pin_memory": true
+    },
+    "preprocess": {
+      "policy": "none",
+      "crop": 180,
+      "out_size": 224
+    },
+    "model": {
+      "name": "resnet50",
+      "pretrained": true,
+      "drop_path": 0.0,
+      "freeze_backbone": false
+    },
+    "train": {
+      "max_epochs": 30,
+      "lr": 0.0001,
+      "head_lr": null,
+      "weight_decay": 0.05,
+      "warmup_epochs": 1,
+      "grad_clip": 1.0,
+      "amp": true,
+      "early_stopping_patience": 8,
+      "monitor": "val_macro_f1"
+    },
+    "loss": {
+      "name": "ce",
+      "label_smoothing": 0.1,
+      "focal_gamma": 2.0,
+      "class_weight_beta": 1.0
+    },
+    "sampler": {
+      "name": "shuffle"
+    },
+    "eval": {
+      "splits": [
+        "val",
+        "test"
+      ]
+    },
+    "_meta": {
+      "config_path": "configs/models/resnet50.yaml"
+    },
+    "seed": 0
+  },
+  "metrics": {
+    "accuracy": 0.8603859250851306,
+    "macro_f1": 0.8428653578305821,
+    "balanced_accuracy": 0.8417761966452033,
+    "per_class_recall": [
+      0.4810126582278481,
+      0.8985507246376812,
+      0.9569620253164557,
+      0.9372937293729373,
+      0.82,
+      0.9052287581699346,
+      0.8278388278388278,
+      0.7300771208226221,
+      0.9107981220657277,
+      0.95
+    ],
+    "per_class_precision": [
+      0.6909090909090909,
+      0.915129151291513,
+      0.9310344827586207,
+      0.890282131661442,
+      0.82,
+      0.8821656050955414,
+      0.7558528428093646,
+      0.7553191489361702,
+      0.9023255813953488,
+      0.9399293286219081
+    ],
+    "per_class_f1": [
+      0.5671641791044777,
+      0.906764168190128,
+      0.943820224719101,
+      0.9131832797427653,
+      0.82,
+      0.8935483870967742,
+      0.7902097902097901,
+      0.742483660130719,
+      0.9065420560747663,
+      0.9449378330373002
+    ],
+    "confusion_matrix": [
+      [
+        76,
+        1,
+        13,
+        11,
+        1,
+        7,
+        6,
+        36,
+        4,
+        3
+      ],
+      [
+        6,
+        248,
+        5,
+        5,
+        0,
+        3,
+        1,
+        5,
+        2,
+        1
+      ],
+      [
+        0,
+        3,
+        378,
+        1,
+        0,
+        2,
+        9,
+        2,
+        0,
+        0
+      ],
+      [
+        4,
+        6,
+        1,
+        284,
+        2,
+        1,
+        4,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        4,
+        41,
+        0,
+        0,
+        1,
+        2,
+        2
+      ],
+      [
+        1,
+        2,
+        0,
+        2,
+        0,
+        277,
+        9,
+        13,
+        1,
+        1
+      ],
+      [
+        0,
+        0,
+        6,
+        4,
+        0,
+        4,
+        226,
+        30,
+        1,
+        2
+      ],
+      [
+        20,
+        9,
+        3,
+        7,
+        1,
+        17,
+        41,
+        284,
+        5,
+        2
+      ],
+      [
+        3,
+        1,
+        0,
+        0,
+        3,
+        2,
+        2,
+        2,
+        194,
+        6
+      ],
+      [
+        0,
+        1,
+        0,
+        1,
+        2,
+        1,
+        1,
+        2,
+        6,
+        266
+      ]
+    ],
+    "n_samples": 2643
+  },
+  "extra": {
+    "rotation_deg": null,
+    "corruption": null,
+    "severity": null,
+    "tta": null,
+    "n_params": 23528522,
+    "train_time_s": 1737.9,
+    "peak_mem_gb": 3.307,
+    "best_epoch": 21,
+    "epochs_trained": 30
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "best_epoch": 17,
+  "monitor": "val_macro_f1",
+  "best_value": 0.8703756885232714,
+  "epochs_trained": 26,
+  "max_epochs": 30,
+  "stopped_early": true,
+  "finished": true,
+  "train_time_s": 1512.4,
+  "peak_mem_gb": 3.309,
+  "n_params": 23528522,
+  "n_trainable_params": 23528522,
+  "train_size": 12332,
+  "train_class_counts": [
+    735,
+    1287,
+    1845,
+    1415,
+    233,
+    1426,
+    1274,
+    1818,
+    994,
+    1305
+  ],
+  "device": "cuda"
+}
