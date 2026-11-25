@@ -1,0 +1,9 @@
+true_class,predicted_class,rate
+Unbarred Tight Spiral,Unbarred Loose Spiral,0.1684981684981685
+Disturbed,Unbarred Loose Spiral,0.12025316455696203
+Disturbed,In-between Round Smooth,0.08860759493670886
+Cigar Shaped Smooth,Edge-on with Bulge,0.08
+Disturbed,Round Smooth,0.0759493670886076
+Unbarred Loose Spiral,Disturbed,0.06940874035989718
+Disturbed,Barred Spiral,0.06329113924050633
+Unbarred Loose Spiral,Unbarred Tight Spiral,0.05398457583547558
